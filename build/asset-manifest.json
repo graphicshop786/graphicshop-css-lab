@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/graphicshop-css-lab/static/css/main.2a142f63.css",
+    "main.js": "/graphicshop-css-lab/static/js/main.2456f14d.js",
+    "static/js/239.f440fbbb.chunk.js": "/graphicshop-css-lab/static/js/239.f440fbbb.chunk.js",
+    "static/js/977.07dcd728.chunk.js": "/graphicshop-css-lab/static/js/977.07dcd728.chunk.js",
+    "static/js/455.c00e02c5.chunk.js": "/graphicshop-css-lab/static/js/455.c00e02c5.chunk.js",
+    "index.html": "/graphicshop-css-lab/index.html",
+    "main.2a142f63.css.map": "/graphicshop-css-lab/static/css/main.2a142f63.css.map",
+    "main.2456f14d.js.map": "/graphicshop-css-lab/static/js/main.2456f14d.js.map",
+    "239.f440fbbb.chunk.js.map": "/graphicshop-css-lab/static/js/239.f440fbbb.chunk.js.map",
+    "977.07dcd728.chunk.js.map": "/graphicshop-css-lab/static/js/977.07dcd728.chunk.js.map",
+    "455.c00e02c5.chunk.js.map": "/graphicshop-css-lab/static/js/455.c00e02c5.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2a142f63.css",
+    "static/js/main.2456f14d.js"
+  ]
+}
