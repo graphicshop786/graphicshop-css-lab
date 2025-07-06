@@ -6,6 +6,7 @@
     "@monaco-editor/react": "^4.7.0",
     "ajv": "^6.12.6",
     "ajv-formats": "^2.1.1",
+    "ajv-keywords": "^3.5.2",
     "htmlhint": "^1.6.3",
     "i18next": "^25.3.1",
     "jspdf": "^3.0.1",
