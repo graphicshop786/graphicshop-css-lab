@@ -35,35 +35,6 @@ import ThemeSwitcher from './components/ThemeSwitcher';
 
 
 function AppWrapper() {
-  // Ensure i18n is initialized only once
-  const [i18nReady, setI18nReady] = useState(false);
-  const [i18nError, setI18nError] = useState(null);
-  React.useEffect(() => {
-    if (!i18n.isInitialized) {
-      i18n
-        .use(initReactI18next)
-        .init({
-          resources: {
-            en: { translation: { 'How to use?': 'How to use?', 'Reset': 'Reset', 'Undo': 'Undo', 'Redo': 'Redo', 'Format CSS': 'Format CSS', 'Copy CSS': 'Copy CSS', 'Download CSS': 'Download CSS', 'Save': 'Save', 'Show Saves': 'Show Saves', 'Hide Saves': 'Hide Saves', 'Replay Animation': 'Replay Animation', 'Desktop': 'Desktop', 'Tablet': 'Tablet', 'Mobile': 'Mobile', 'Device': 'Device', 'Theme': 'Theme', 'Import HTML': 'Import HTML', 'Import CSS': 'Import CSS', 'Export to PDF': 'Export to PDF', 'Export to CodePen': 'Export to CodePen', 'Export to JSFiddle': 'Export to JSFiddle', 'Upload Image': 'Upload Image', 'Choose Color': 'Choose Color', 'Font': 'Font', 'Accessibility Audit': 'Accessibility Audit', 'No issues found': 'No issues found', 'Issues found': 'Issues found', 'Print': 'Print' } },
-          },
-          lng: 'en',
-          fallbackLng: 'en',
-          interpolation: { escapeValue: false },
-        })
-        .then(() => setI18nReady(true))
-        .catch((err) => { setI18nError(err); });
-    } else {
-      setI18nReady(true);
-    }
-  }, []);
-  if (i18nError) {
-    console.error('i18n failed to load:', i18nError);
-    return <div style={{padding:'2rem',color:'red',fontSize:'2rem'}}>i18n failed to load: {String(i18nError)}</div>;
-  }
-  if (!i18nReady) {
-    console.log('i18n not ready');
-    return <div style={{padding:'2rem',fontSize:'2rem'}}>Loading...</div>;
-  }
   return <App />;
 }
 
@@ -423,6 +394,24 @@ function App() {
 
   // Module navigation state
   const [module, setModule] = useState('editor');
+
+  React.useEffect(() => {
+    // Google AdSense script inject
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2292081789675571';
+    script.crossOrigin = 'anonymous';
+    document.head.appendChild(script);
+    // Google AdSense meta tag
+    const meta = document.createElement('meta');
+    meta.name = 'google-adsense-account';
+    meta.content = 'ca-pub-2292081789675571';
+    document.head.appendChild(meta);
+    return () => {
+      document.head.removeChild(script);
+      document.head.removeChild(meta);
+    };
+  }, []);
 
   return (
     <div className={`min-h-screen p-0 flex flex-col gap-0 transition-colors duration-300 ${darkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-br from-blue-50 via-white to-blue-100'}`}>
