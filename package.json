@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
+    "ajv": "^6.12.6",
+    "ajv-formats": "^2.1.1",
     "htmlhint": "^1.6.3",
     "i18next": "^25.3.1",
     "jspdf": "^3.0.1",
@@ -17,6 +19,7 @@
   "devDependencies": {
     "@craco/craco": "^7.0.0",
     "autoprefixer": "^10.4.14",
+    "cross-env": "^7.0.3",
     "gh-pages": "^5.0.0",
     "postcss": "^8.4.21",
     "react-scripts": "^5.0.1",
@@ -24,19 +27,11 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "SKIP_PREFLIGHT_CHECK=true TSC_COMPILE_ON_ERROR=true craco build",
+    "build": "cross-env SKIP_PREFLIGHT_CHECK=true TSC_COMPILE_ON_ERROR=true craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
-  },
-  "resolutions": {
-    "ajv": "^6.12.6",
-    "ajv-keywords": "^3.5.2"
-  },
-  "overrides": {
-    "ajv": "^6.12.6",
-    "ajv-keywords": "^3.5.2"
   },
   "browserslist": {
     "production": [
