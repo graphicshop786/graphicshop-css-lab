@@ -25,33 +25,13 @@ const Gallery = () => {
         <div style={{ display: 'flex', gap: 8, background: '#f8fafc', padding: 4, borderRadius: 12 }}>
           <button 
             onClick={() => setTab('cards')} 
-            style={{ 
-              fontWeight: tab==='cards'?700:400, 
-              background: tab==='cards'?'#2563eb':'transparent',
-              color: tab==='cards'?'white':'#64748b',
-              border: 'none', 
-              fontSize: 16, 
-              cursor: 'pointer',
-              padding: '8px 16px',
-              borderRadius: 8,
-              transition: 'all 0.2s ease'
-            }}
+            className={`custom-tool-btn${tab==='cards' ? ' active' : ''}`}
           >
             🎴 Cards
           </button>
           <button 
             onClick={() => setTab('buttons')} 
-            style={{ 
-              fontWeight: tab==='buttons'?700:400, 
-              background: tab==='buttons'?'#2563eb':'transparent',
-              color: tab==='buttons'?'white':'#64748b',
-              border: 'none', 
-              fontSize: 16, 
-              cursor: 'pointer',
-              padding: '8px 16px',
-              borderRadius: 8,
-              transition: 'all 0.2s ease'
-            }}
+            className={`custom-tool-btn${tab==='buttons' ? ' active' : ''}`}
           >
             🔘 Buttons
           </button>

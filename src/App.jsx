@@ -41,6 +41,8 @@ function AppWrapper() {
 function App() {
   // Fix: Add menuOpen state for mobile/desktop menu toggle
   const [menuOpen, setMenuOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false); // for desktop collapse
 
   // ...existing code...
   // CSS suggestions for beginners
@@ -413,88 +415,57 @@ function App() {
     };
   }, []);
 
-  return (
-    <div className={`min-h-screen p-0 flex flex-col gap-0 transition-colors duration-300 ${darkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-br from-blue-50 via-white to-blue-100'}`}>
-      {/* Enhanced Pro Top Bar */}
-      <header className={`sticky top-0 z-30 w-full shadow-lg backdrop-blur bg-opacity-70 ${darkMode ? 'bg-gray-900/80 border-b border-gray-800' : 'bg-white/80 border-b border-blue-200'}`} style={{backdropFilter:'blur(12px)'}}>
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between px-4 py-3 gap-3">
-          {/* Brand and navigation */}
-          <div className="flex items-center gap-4 w-full lg:w-auto justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl font-extrabold tracking-tight text-blue-600 select-none">🎨 Graphicshop Pro</span>
-              <span className="hidden sm:inline text-sm text-gray-600 dark:text-gray-400">CSS Lab & Learning Platform</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <button onClick={() => setDarkMode((d) => !d)} aria-label="Toggle dark mode" className={`px-3 py-1.5 rounded-lg font-semibold shadow transition-all duration-150 border ${darkMode ? 'bg-gray-800 text-white border-gray-700 hover:bg-gray-700' : 'bg-white text-gray-900 border-blue-200 hover:bg-blue-100'}`}>{darkMode ? '🌙' : '☀️'}</button>
-            </div>
-          </div>
-        </div>
-      </header>
+  // Determine if sidebar is collapsed (desktop only)
+  const isSidebarCollapsed = isCollapsed && window.innerWidth > 1024;
 
-      {/* Enhanced Help section */}
-      {showHelp && (
-        <div className={`mb-4 p-6 rounded-xl ${darkMode ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-900'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-blue-200'}`}> 
-          <h2 className="font-bold mb-3 text-xl">💡 How to use Graphicshop CSS Lab:</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h3 className="font-semibold mb-2 text-blue-600">🎯 Getting Started</h3>
-              <ul className="list-disc pl-5 space-y-1 text-sm">
-                <li>Write or paste your custom <b>HTML</b> and <b>CSS</b> in the editors</li>
-                <li>Use the example buttons to quickly try common CSS styles</li>
-                <li>Click <b>Reset</b> to start over with a clean slate</li>
-                <li>See the live preview update in real-time</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2 text-green-600">🚀 Advanced Features</h3>
-              <ul className="list-disc pl-5 space-y-1 text-sm">
-                <li>Switch between Light and Dark mode for different contexts</li>
-                <li>Use <b>Undo/Redo</b> for CSS changes, <b>Format</b> for clean code</li>
-                <li>Save and load your favorite designs with <b>Save</b> and <b>Show Saves</b></li>
-                <li>Export your work with <b>Copy/Download</b> options</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
+  const [loading, setLoading] = useState(true);
 
-      {/* Enhanced Saved Designs */}
-      {showSaved && (
-        <div className={`mb-4 p-6 rounded-xl ${darkMode ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-900'} shadow-lg border ${darkMode ? 'border-gray-700' : 'border-blue-200'}`}> 
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="font-bold text-xl">💾 Saved Designs</h2>
-            <button onClick={clearSaves} className="px-3 py-1.5 rounded-lg bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition-colors">Clear All</button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {savedDesigns.length === 0 && <span className="text-gray-500 col-span-full text-center py-4">No saved designs yet. Create something amazing and save it!</span>}
-            {savedDesigns.map((d, i) => (
-              <button key={i} onClick={() => loadDesign(d)} className="p-3 rounded-lg border bg-white text-gray-900 shadow hover:shadow-md transition-all text-left">
-                <div className="font-medium text-sm">{d.date.slice(0, 19).replace('T', ' ')}</div>
-                <div className="text-xs text-gray-500 mt-1">Click to load</div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+  React.useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 900); // simulate load
+    return () => clearTimeout(timer);
+  }, []);
 
-      {/* Enhanced Suggestion box */}
-      <div className={`rounded-xl p-6 text-base font-medium mb-6 shadow-lg border mx-4 ${darkMode ? 'bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-blue-200 border-gray-700' : 'bg-gradient-to-r from-blue-100 via-white to-blue-50 text-blue-900 border-blue-200'}`}
-        style={{transition: 'background 0.3s'}}>
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">💡</span>
-          <div>
-            <div className="font-semibold mb-1">CSS Tip of the Day:</div>
-            <div>{suggestions[suggestionIndex]}</div>
-          </div>
+  if (loading) {
+    return (
+      <div className="app-loading-overlay">
+        <div className="app-loading-box">
+          <div className="app-loading-spinner" aria-label="Loading spinner"></div>
+          <div className="app-loading-text">Loading...</div>
+          <div className="app-loading-desc">Graphicshop CSS Lab is a modern CSS learning and prototyping tool. Practice, design, and export CSS with ease!</div>
         </div>
       </div>
+    );
+  }
 
-      {/* Main Content */}
-      <main className="flex flex-col lg:flex-row gap-8 w-full max-w-7xl mx-auto px-4 py-6">
-        {/* Enhanced Sidebar navigation */}
-        <Sidebar setModule={setModule} module={module} />
-        
-        <div className="flex-1">
+  return (
+    <div>
+      {/* Header and Tip Bar (always at top, full width) */}
+      <header className={`custom-header ${darkMode ? 'dark' : ''}`}>
+        <div className="custom-header-inner">
+          {/* Brand and navigation */}
+          <div className="custom-header-brand">
+            <span className="custom-header-title">🎨 Graphicshop Pro</span>
+            <span className="custom-header-desc">CSS Lab & Learning Platform</span>
+          </div>
+          <div className="custom-header-actions">
+            {/* Hamburger for mobile */}
+            <button className="custom-tool-btn custom-header-hamburger" style={{display: 'none'}} aria-label="Open sidebar" onClick={() => setSidebarOpen(true)}>
+              <span style={{fontSize:'1.5rem'}}>&#9776;</span>
+            </button>
+            <button onClick={() => setDarkMode((d) => !d)} aria-label="Toggle dark mode" className="custom-header-dark-btn">{darkMode ? '🌙' : '☀️'}</button>
+          </div>
+        </div>
+        {/* CSS Tip of the Day */}
+        <div className="custom-header-tip">
+          <span className="custom-header-tip-icon">��</span>
+          <span className="custom-header-tip-label">CSS Tip of the Day:</span>
+          <span className="custom-header-tip-text">{suggestions[suggestionIndex]}</span>
+        </div>
+      </header>
+      {/* Main flex area: sidebar + content */}
+      <div className="main-area">
+        <Sidebar setModule={setModule} module={module} darkMode={darkMode} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+        <main className="main-content">
           {module === 'editor' && (
             <CodeEditor
               cardPresets={cardPresets}
@@ -524,27 +495,19 @@ function App() {
           {module === 'download' && <DownloadZipButton />}
           {module === 'codepen' && <ExportToCodePen />}
           {module === 'compare' && <ComponentComparison />}
-        </div>
-      </main>
-
-      {/* Enhanced Footer */}
-      <footer className={`mt-auto py-8 ${darkMode ? 'bg-gray-900 text-gray-300' : 'bg-white text-gray-600'} border-t ${darkMode ? 'border-gray-800' : 'border-blue-200'}`}>
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">🎨</span>
-              <span className="font-semibold text-blue-600">Graphicshop CSS Lab</span>
-              <span className="text-sm">by graphicshop786</span>
-            </div>
-            <div className="flex items-center gap-6 text-sm">
-              <a href="https://github.com/graphicshop786" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors">GitHub</a>
-              <a href="mailto:graphicshop786@gmail.com" className="hover:text-blue-600 transition-colors">Email</a>
-              <a href="https://wa.me/923401617879" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors">WhatsApp</a>
-            </div>
+        </main>
+        {sidebarOpen && <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} tabIndex={-1} aria-label="Close sidebar"></div>}
+      </div>
+      {/* Footer (always at bottom, full width) */}
+      <footer className={`custom-footer ${darkMode ? 'dark' : ''}`}>
+        <div>
+          <div className="footer-brand">🎨 Graphicshop CSS Lab <span style={{ fontWeight: 400, fontSize: '0.9rem' }}>by graphicshop786</span></div>
+          <div className="footer-links" style={{ margin: '1rem 0' }}>
+            <a href="https://github.com/graphicshop786" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="mailto:graphicshop786@gmail.com">Email</a>
+            <a href="https://wa.me/923401617879" target="_blank" rel="noopener noreferrer">WhatsApp</a>
           </div>
-          <div className="mt-4 text-xs opacity-75">
-            Made with ❤️ for the web development community
-          </div>
+          <div className="footer-note">Made with ❤️ for the web development community</div>
         </div>
       </footer>
     </div>

@@ -172,18 +172,7 @@ const Tools = () => {
           <button 
             key={i} 
             onClick={() => setTab(i)} 
-            style={{ 
-              fontWeight: tab===i?700:400, 
-              borderBottom: tab===i?'3px solid #2563eb':'none', 
-              background:'none', 
-              border:'none', 
-              fontSize: 16, 
-              cursor:'pointer', 
-              color: tab===i?'#2563eb':'#64748b', 
-              padding: '8px 16px',
-              borderRadius: '8px 8px 0 0',
-              transition: 'all 0.2s ease'
-            }}
+            className={`custom-tool-btn${tab===i ? ' active' : ''}`}
           >
             <span style={{ marginRight: 8 }}>{t.icon}</span>
             {t.label}

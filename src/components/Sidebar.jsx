@@ -27,64 +27,104 @@ const modules = [
   { key: 'compare', label: '⚖️ Component Comparison', icon: '⚖️' },
 ];
 
-const Sidebar = ({ setModule, module }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
+const Sidebar = ({ setModule, module, darkMode, sidebarOpen, setSidebarOpen, isCollapsed, setIsCollapsed }) => {
+  // Responsive: show/hide sidebar on mobile
+  // On desktop, always visible
+  // On mobile, only show if sidebarOpen
   return (
-    <aside className={`${isCollapsed ? 'w-16' : 'w-64'} min-h-screen bg-white dark:bg-gray-900 border-r border-blue-100 dark:border-gray-800 p-4 flex flex-col gap-2 transition-all duration-300 relative`}>
-      {/* Toggle Button */}
-      <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-6 bg-blue-600 text-white p-1 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-10"
-        aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-      >
-        {isCollapsed ? '→' : '←'}
-      </button>
-
+    <aside
+      className={`custom-sidebar${isCollapsed ? ' custom-sidebar-collapsed' : ''}${darkMode ? ' dark' : ''} responsive-sidebar`}
+      style={{
+        left: 0,
+        top: 0,
+        height: '100vh',
+        zIndex: 100,
+        position: 'fixed',
+        transform: 'translateX(0)',
+        transition: 'transform 0.3s',
+        ...(window.innerWidth <= 1024
+          ? {
+              transform: sidebarOpen ? 'translateX(0)' : 'translateX(-110%)',
+              boxShadow: sidebarOpen ? '0 0 0 9999px rgba(0,0,0,0.2)' : 'none',
+              position: 'fixed',
+              width: '80vw',
+              maxWidth: 320,
+              minWidth: 220,
+              background: darkMode ? '#111827' : '#fff',
+            }
+          : {
+              position: 'static',
+              width: isCollapsed ? 64 : 256,
+              minWidth: isCollapsed ? 64 : 256,
+              maxWidth: isCollapsed ? 64 : 256,
+              height: 'auto',
+              boxShadow: 'none',
+            }),
+      }}
+      tabIndex={-1}
+      aria-label="Sidebar navigation"
+    >
+      {/* Close button for mobile */}
+      {window.innerWidth <= 1024 && (
+        <button
+          className="custom-tool-btn"
+          style={{ position: 'absolute', top: 12, right: 12, zIndex: 101 }}
+          aria-label="Close sidebar"
+          onClick={() => setSidebarOpen(false)}
+        >
+          <span style={{ fontSize: '1.5rem' }}>×</span>
+        </button>
+      )}
+      {/* Toggle Button (desktop only) */}
+      {window.innerWidth > 1024 && (
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="custom-sidebar-toggle"
+          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          tabIndex={0}
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setIsCollapsed(!isCollapsed); }}
+          style={{ outline: 'none' }}
+        >
+          {isCollapsed ? <span aria-hidden>→</span> : <span aria-hidden>←</span>}
+        </button>
+      )}
       {/* Header */}
-      <div className="mb-6">
+      <div className="custom-sidebar-header" style={isCollapsed ? { display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 60 } : {}}>
         {!isCollapsed ? (
           <div>
-            <h1 className="text-xl font-bold text-blue-700 dark:text-blue-200 mb-2">🎨 Graphicshop</h1>
-            <p className="text-xs text-gray-600 dark:text-gray-400">CSS Lab & Learning Platform</p>
+            <h1 className="custom-sidebar-title">🎨 Graphicshop</h1>
+            <p className="custom-sidebar-desc">CSS Lab & Learning Platform</p>
           </div>
         ) : (
-          <div className="text-center">
-            <div className="text-2xl">🎨</div>
+          <div style={{ textAlign: 'center', width: '100%' }}>
+            <div style={{ fontSize: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🎨</div>
           </div>
         )}
       </div>
-
       {/* Navigation */}
-      <nav className="flex-1 space-y-1">
-        {modules.map(m => (
-          <button
-            key={m.key}
-            className={`w-full text-left px-3 py-2.5 rounded-lg font-medium transition-all duration-200 group ${
-              module === m.key 
-                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 shadow-sm' 
-                : 'hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-300'
-            }`}
-            onClick={() => setModule(m.key)}
-            title={isCollapsed ? m.label : undefined}
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-lg">{m.icon}</span>
-              {!isCollapsed && (
-                <span className="truncate">{m.label.replace(/^[^\s]+\s/, '')}</span>
-              )}
-            </div>
-          </button>
-        ))}
-      </nav>
-
+      {!isCollapsed && (
+        <nav className="custom-sidebar-nav" style={{ flex: 1 }}>
+          {modules.map(m => (
+            <button
+              key={m.key}
+              className={module === m.key ? 'active' : ''}
+              onClick={() => {
+                setModule(m.key);
+                if (window.innerWidth <= 1024) setSidebarOpen(false);
+              }}
+              title={m.label}
+            >
+              <span style={{ fontSize: '1.1rem', marginRight: '0.5rem' }}>{m.icon}</span>
+              <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.label.replace(/^[^\s]+\s/, '')}</span>
+            </button>
+          ))}
+        </nav>
+      )}
       {/* Footer */}
       {!isCollapsed && (
-        <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
-            <div className="mb-2">Made with ❤️</div>
-            <div>by graphicshop786</div>
-          </div>
+        <div className="custom-sidebar-footer">
+          <div>Made with ❤️</div>
+          <div>by graphicshop786</div>
         </div>
       )}
     </aside>
